@@ -1,4 +1,4 @@
-/////////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////
 // Copyright 2019 StarkWare Industries Ltd.                                    //
 //                                                                             //
 // Licensed under the Apache License, Version 2.0 (the "License").             //
@@ -12,14 +12,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.    //
 // See the License for the specific language governing permissions             //
 // and limitations under the License.                                          //
-/////////////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////////////
 
-const { hdkey } = require('ethereumjs-wallet');
-const bip39 = require('bip39');
-const encUtils = require('enc-utils');
-const BN = require('bn.js');
-const hash = require('hash.js');
-const { ec } = require('./signature.js');
+import { mnemonicToSeedSync } from 'bip39'
+import BN from 'bn.js'
+import { binaryToNumber, hexToBinary, hexToBuffer, numberToHex, removeHexPrefix, sanitizeBytes } from 'enc-utils'
+import { hdkey } from 'ethereumjs-wallet'
+import hash from 'hash.js'
+
+import { ec } from './signature'
 
 /*
  Returns an integer from a given section of bits out of a hex string.
@@ -28,10 +29,10 @@ const { ec } = require('./signature.js');
  end represents the index of the last bit to cut from the hex string.
 */
 function getIntFromBits(hex, start, end = undefined) {
-    const bin = encUtils.hexToBinary(hex);
-    const bits = bin.slice(start, end);
-    const int = encUtils.binaryToNumber(bits);
-    return int;
+  const bin = hexToBinary(hex)
+  const bits = bin.slice(start, end)
+  const int = binaryToNumber(bits)
+  return int
 }
 
 /*
@@ -41,14 +42,10 @@ function getIntFromBits(hex, start, end = undefined) {
  address.
 */
 function getKeyPairFromPath(mnemonic, path) {
-    const seed = bip39.mnemonicToSeedSync(mnemonic);
-    const keySeed = hdkey
-        .fromMasterSeed(seed, 'hex')
-        .derivePath(path)
-        .getWallet()
-        .getPrivateKeyString();
-    const starkEcOrder = ec.n;
-    return ec.keyFromPrivate(grindKey(keySeed, starkEcOrder), 'hex');
+  const seed = mnemonicToSeedSync(mnemonic)
+  const keySeed = hdkey.fromMasterSeed(seed, 'hex').derivePath(path).getWallet().getPrivateKeyString()
+  const starkEcOrder = ec.n
+  return ec.keyFromPrivate(grindKey(keySeed, starkEcOrder), 'hex')
 }
 
 /*
@@ -61,21 +58,15 @@ function getKeyPairFromPath(mnemonic, path) {
  index represents an index of the possible associated wallets derived from the seed.
 */
 function getAccountPath(layer, application, ethereumAddress, index) {
-    const layerHash = hash
-        .sha256()
-        .update(layer)
-        .digest('hex');
-    const applicationHash = hash
-        .sha256()
-        .update(application)
-        .digest('hex');
-    const layerInt = getIntFromBits(layerHash, -31);
-    const applicationInt = getIntFromBits(applicationHash, -31);
-    // Draws the 31 LSBs of the eth address.
-    const ethAddressInt1 = getIntFromBits(ethereumAddress, -31);
-    // Draws the following 31 LSBs of the eth address.
-    const ethAddressInt2 = getIntFromBits(ethereumAddress, -62, -31);
-    return `m/2645'/${layerInt}'/${applicationInt}'/${ethAddressInt1}'/${ethAddressInt2}'/${index}`;
+  const layerHash = hash.sha256().update(layer).digest('hex')
+  const applicationHash = hash.sha256().update(application).digest('hex')
+  const layerInt = getIntFromBits(layerHash, -31)
+  const applicationInt = getIntFromBits(applicationHash, -31)
+  // Draws the 31 LSBs of the eth address.
+  const ethAddressInt1 = getIntFromBits(ethereumAddress, -31)
+  // Draws the following 31 LSBs of the eth address.
+  const ethAddressInt2 = getIntFromBits(ethereumAddress, -62, -31)
+  return `m/2645'/${layerInt}'/${applicationInt}'/${ethAddressInt1}'/${ethAddressInt2}'/${index}`
 }
 
 /*
@@ -87,39 +78,34 @@ function getAccountPath(layer, application, ethereumAddress, index) {
  256bit multiple of StarkEx EC order.
 */
 function grindKey(keySeed, keyValLimit) {
-    const sha256EcMaxDigest = new BN(
-        '1 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000',
-        16
-    );
-    const maxAllowedVal = sha256EcMaxDigest.sub(sha256EcMaxDigest.mod(keyValLimit));
-    let i = 0;
-    let key = hashKeyWithIndex(keySeed, i);
-    i++;
-    // Make sure the produced key is devided by the Stark EC order, and falls within the range
-    // [0, maxAllowedVal).
-    while (!(key.lt(maxAllowedVal))) {
-        key = hashKeyWithIndex(keySeed.toString('hex'), i);
-        i++;
-    }
-    return key.umod(keyValLimit).toString('hex');
+  const sha256EcMaxDigest = new BN('1 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000', 16)
+  const maxAllowedVal = sha256EcMaxDigest.sub(sha256EcMaxDigest.mod(keyValLimit))
+  let i = 0
+  let key = hashKeyWithIndex(keySeed, i)
+  i++
+  // Make sure the produced key is devided by the Stark EC order, and falls within the range
+  // [0, maxAllowedVal).
+  while (!key.lt(maxAllowedVal)) {
+    key = hashKeyWithIndex(keySeed.toString('hex'), i)
+    i++
+  }
+  return key.umod(keyValLimit).toString('hex')
 }
 
 function hashKeyWithIndex(key, index) {
-    return new BN(
-        hash
-            .sha256()
-            .update(
-                encUtils.hexToBuffer(
-                    encUtils.removeHexPrefix(key) +
-                    encUtils.sanitizeBytes(encUtils.numberToHex(index), 2)
-                )
-            )
-            .digest('hex'),
-        16
-    );
+  return new BN(
+    hash
+      .sha256()
+      .update(hexToBuffer(removeHexPrefix(key) + sanitizeBytes(numberToHex(index), 2)))
+      .digest('hex'),
+    16
+  )
 }
 
-module.exports = {
-    StarkExEc: ec.n,  // Data.
-    getKeyPairFromPath, getAccountPath, grindKey  // Function.
-};
+const StarkExEc = ec.n
+export {
+  getAccountPath,
+  getKeyPairFromPath,
+  grindKey, // Function.
+  StarkExEc, // Data.
+}

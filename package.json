@@ -1,24 +1,61 @@
 {
-  "name": "starkware-crypto",
+  "name": "@toruslabs/starkware-crypto",
   "version": "1.0.0",
   "description": "Signatures, keys and Pedersen hash on STARK friendly elliptic curve",
-  "main": "src/index.js",
+  "main": "dist/starkware-crypto.cjs.js",
+  "types": "types/starkware-crypto.d.ts",
   "scripts": {
-    "test": "mocha",
-    "lint": "eslint -f unix --ext=.js ./"
+    "test": "mocha --require @babel/register",
+    "dev": "rimraf dist/ && cross-env NODE_ENV=development && parallel-webpack --no-stats",
+    "build": "rimraf dist/ && cross-env NODE_ENV=production && parallel-webpack --no-stats",
+    "prepack": "npm run build",
+    "lint:js": "eslint --fix 'src/*.js'"
   },
+  "files": [
+    "dist",
+    "types"
+  ],
   "dependencies": {
     "bip39": "^3.0.4",
-    "bn.js": "^4.4.0",
-    "elliptic": "git://github.com/indutny/elliptic.git#v6.5.0",
+    "bn.js": "^5.2.0",
+    "elliptic": "git://github.com/indutny/elliptic.git#v6.5.4",
     "enc-utils": "^3.0.0",
     "ethereumjs-wallet": "^1.0.2",
-    "hash.js": "^1.0.0"
+    "hash.js": "^1.1.7"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
-    "eslint": "^6.8.0",
-    "mocha": "^7.1.0"
+    "@babel/cli": "^7.15.7",
+    "@babel/core": "^7.15.8",
+    "@babel/eslint-parser": "^7.15.8",
+    "@babel/eslint-plugin": "^7.14.5",
+    "@babel/plugin-transform-runtime": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
+    "@babel/register": "^7.15.3",
+    "@babel/runtime-corejs3": "^7.15.4",
+    "@rollup/plugin-babel": "^5.3.0",
+    "babel-loader": "^8.2.2",
+    "chai": "^4.3.4",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.1.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-chai-expect": "^2.2.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-mocha": "^9.0.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-webpack-plugin": "^3.0.1",
+    "mocha": "^9.1.3",
+    "parallel-webpack": "^2.6.0",
+    "prettier": "^2.4.1",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.58.0",
+    "rollup-plugin-sourcemaps": "^0.6.3",
+    "webpack": "^4.46.0",
+    "webpack-cli": "^4.9.0"
   },
   "author": "",
   "license": "ISC"

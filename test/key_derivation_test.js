@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-expressions */
-const chai = require('chai');
-const { StarkExEc, getKeyPairFromPath, getAccountPath, grindKey } =
-    require('../src/key_derivation');
+import chai from 'chai';
+import { StarkExEc, getKeyPairFromPath, getAccountPath, grindKey } from '../src/key_derivation';
 const { expect } = chai;
 
 const layer = 'starkex';

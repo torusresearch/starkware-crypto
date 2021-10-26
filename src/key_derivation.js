@@ -69,6 +69,16 @@ function getAccountPath(layer, application, ethereumAddress, index) {
   return `m/2645'/${layerInt}'/${applicationInt}'/${ethAddressInt1}'/${ethAddressInt2}'/${index}`
 }
 
+function hashKeyWithIndex(key, index) {
+  return new BN(
+    hash
+      .sha256()
+      .update(hexToBuffer(removeHexPrefix(key) + sanitizeBytes(numberToHex(index), 2)))
+      .digest('hex'),
+    16
+  )
+}
+
 /*
  This function receives a key seed and produces an appropriate StarkEx key from a uniform
  distribution.
@@ -90,16 +100,6 @@ function grindKey(keySeed, keyValLimit) {
     i++
   }
   return key.umod(keyValLimit).toString('hex')
-}
-
-function hashKeyWithIndex(key, index) {
-  return new BN(
-    hash
-      .sha256()
-      .update(hexToBuffer(removeHexPrefix(key) + sanitizeBytes(numberToHex(index), 2)))
-      .digest('hex'),
-    16
-  )
 }
 
 const StarkExEc = ec.n

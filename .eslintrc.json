@@ -1,17 +1,18 @@
 {
     "extends": [
+      "standard",
       "eslint:recommended",
       "plugin:prettier/recommended",
       "plugin:import/errors",
       "plugin:import/warnings",
       "plugin:promise/recommended",
       "airbnb-base",
-      "plugin:mocha/recommended",
       "plugin:chai-expect/recommended",
       "prettier"
     ],
     "plugins": ["prettier", "@babel", "promise", "import", "mocha", "chai-expect", "simple-import-sort"],
     "parser": "@babel/eslint-parser",
+    "ignorePatterns": "*.config.js",
     "parserOptions": {
       "sourceType": "module",
       "ecmaVersion": 11,
@@ -19,7 +20,6 @@
         "configFile": "./babel.config.json"
       }
     },
-    "ignorePatterns": "*.config.js",
     "rules": {
       "promise/catch-or-return": [2, { "allowFinally": true }],
       "no-bitwise": 0,
@@ -39,10 +39,6 @@
       ],
       "no-console": 0,
       "import/prefer-default-export": 0,
-      "no-plusplus": "off",
-      "camelcase":"off",
-      "no-param-reassign": "off",
-      "no-use-before-define": "off",
       "no-nested-ternary": 0,
       "no-confusing-arrow": 0,
       "linebreak-style": 0,
@@ -60,16 +56,6 @@
     "env": {
       "es6": true,
       "browser": true,
-      "node": true
-    },
-    "globals": {
-      "document": true,
-      "fetch": true,
-      "jest": true,
-      "it": true,
-      "beforeEach": true,
-      "afterEach": true,
-      "describe": true,
-      "expect": true
+      "node": true,
     }
   }

@@ -13,15 +13,15 @@ import {
   verify, // Function.
 } from './signature'
 
-export default {
+export {
   ec,
-  getLimitOrderMsgHash,
-  getTransferMsgHash,
-  pedersen,
-  sign,
-  verify, // Function.
   getAccountPath,
   getKeyPairFromPath,
+  getLimitOrderMsgHash,
+  getTransferMsgHash,
   grindKey, // Function.
+  pedersen,
+  sign,
   StarkExEc, // Data.
+  verify, // Function.
 }

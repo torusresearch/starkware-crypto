@@ -43,6 +43,9 @@
       "no-confusing-arrow": 0,
       "linebreak-style": 0,
       "no-extra-semi": 0,
+      "no-param-reassign": "off",
+      "no-plusplus": "off",
+      "no-use-before-define":"off",
       "no-unused-vars": [2, { "args": "after-used", "argsIgnorePattern": "_" }],
       "prettier/prettier": [
         "error",
@@ -56,6 +59,6 @@
     "env": {
       "es6": true,
       "browser": true,
-      "node": true,
+      "node": true
     }
   }

@@ -4,21 +4,18 @@
   "description": "Signatures, keys and Pedersen hash on STARK friendly elliptic curve",
   "main": "dist/starkware-crypto.cjs.js",
   "types": "types/starkware-crypto.d.ts",
+  "module": "dist/starkware-crypto.esm.js",
   "scripts": {
     "test": "mocha --require @babel/register",
-    "dev": "rimraf dist/ && cross-env NODE_ENV=development && parallel-webpack --no-stats",
-    "build": "rimraf dist/ && cross-env NODE_ENV=production && parallel-webpack --no-stats",
+    "dev": "rimraf dist/ && cross-env NODE_ENV=development rollup -c && parallel-webpack --no-stats",
+    "build": "rimraf dist/ && cross-env NODE_ENV=production rollup -c && parallel-webpack --no-stats",
     "prepack": "npm run build",
     "lint:js": "eslint --fix 'src/*.js'"
   },
-  "files": [
-    "dist",
-    "types"
-  ],
   "dependencies": {
     "bip39": "^3.0.4",
     "bn.js": "^5.2.0",
-    "elliptic": "git://github.com/indutny/elliptic.git#v6.5.4",
+    "elliptic": "~6.5.4",
     "enc-utils": "^3.0.0",
     "ethereumjs-wallet": "^1.0.2",
     "hash.js": "^1.1.7"

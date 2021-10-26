@@ -16,7 +16,6 @@ const baseConfig = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     library: libraryName,
-    libraryExport: 'default',
   },
   resolve: {
     alias: {

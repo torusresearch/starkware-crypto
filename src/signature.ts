@@ -55,7 +55,7 @@ const shiftPoint = constantPoints[0];
 /*
   Checks that the string str start with '0x'.
 */
-export function hasHexPrefix(str: string) {
+export function hasHexPrefix(str: string): boolean {
   return str.substring(0, 2) === "0x";
 }
 
@@ -65,7 +65,7 @@ export function hasHexPrefix(str: string) {
  input, lowerBound, and upperBound should be of type BN.
  inputName should be a string.
 */
-function assertInRange(input: BN, lowerBound: BN, upperBound: BN, inputName = "") {
+function assertInRange(input: BN, lowerBound: BN, upperBound: BN, inputName = ""): void {
   const messageSuffix = inputName === "" ? "invalid length" : `invalid ${inputName} length`;
   assert(input.gte(lowerBound) && input.lt(upperBound), `Message not signable, ${messageSuffix}.`);
 }
@@ -146,7 +146,7 @@ export function getLimitOrderMsgHash(
   tokenBuy: string,
   nonce: number,
   expirationTimestamp: number
-) {
+): string {
   assert(hasHexPrefix(tokenSell) && hasHexPrefix(tokenBuy), "Hex strings expected to be prefixed with 0x.");
   const vaultSellBn = new BN(vaultSell);
   const vaultBuyBn = new BN(vaultBuy);

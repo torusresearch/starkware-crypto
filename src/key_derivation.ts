@@ -16,13 +16,14 @@
 
 import { mnemonicToSeedSync } from "bip39";
 import BN from "bn.js";
+import { ec as EllipticCurve } from "elliptic";
 import { binaryToNumber, hexToBinary, hexToBuffer, numberToHex, removeHexPrefix, sanitizeBytes } from "enc-utils";
 import { hdkey } from "ethereumjs-wallet";
 import hash from "hash.js";
 
 import { ec } from "./signature";
 
-function hashKeyWithIndex(key: string, index: number) {
+function hashKeyWithIndex(key: string, index: number): BN {
   return new BN(
     hash
       .sha256()
@@ -53,7 +54,7 @@ function getIntFromBits(hex: string, start: number, end?: number): number {
  deterministically search (by applying more hashes, AKA grinding) for a value lower than the largest
  256bit multiple of StarkEx EC order.
 */
-function grindKey(keySeed: string, keyValLimit: BN) {
+function grindKey(keySeed: string, keyValLimit: BN): string {
   const sha256EcMaxDigest = new BN("1 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000", 16);
   const maxAllowedVal = sha256EcMaxDigest.sub(sha256EcMaxDigest.mod(keyValLimit));
   let i = 0;
@@ -74,7 +75,7 @@ function grindKey(keySeed: string, keyValLimit: BN) {
  path is a formatted string describing the stark key path based on the layer, application and eth
  address.
 */
-function getKeyPairFromPath(mnemonic: string, path: string) {
+function getKeyPairFromPath(mnemonic: string, path: string): EllipticCurve.KeyPair {
   const seed = mnemonicToSeedSync(mnemonic);
   const keySeed = hdkey.fromMasterSeed(seed).derivePath(path).getWallet().getPrivateKeyString();
   const starkEcOrder = ec.n as BN;
@@ -90,7 +91,7 @@ function getKeyPairFromPath(mnemonic: string, path: string) {
  key.
  index represents an index of the possible associated wallets derived from the seed.
 */
-function getAccountPath(layer: any, application: any, ethereumAddress: string, index: number) {
+function getAccountPath(layer: string, application: string, ethereumAddress: string, index: number): string {
   const layerHash = hash.sha256().update(layer).digest("hex");
   const applicationHash = hash.sha256().update(application).digest("hex");
   const layerInt = getIntFromBits(layerHash, -31);

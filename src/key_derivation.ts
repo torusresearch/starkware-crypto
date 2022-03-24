@@ -38,7 +38,7 @@ function hashKeyWithIndex(key: string, index: number) {
  start represents the index of the first bit to cut from the hex string (binary) in LSB order.
  end represents the index of the last bit to cut from the hex string.
 */
-function getIntFromBits(hex: string, start: number, end: number | undefined = undefined): number {
+function getIntFromBits(hex: string, start: number, end?: number): number {
   const bin = hexToBinary(hex);
   const bits = bin.slice(start, end);
   const int = binaryToNumber(bits);

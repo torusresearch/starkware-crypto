@@ -77,7 +77,7 @@ function assertInRange(input: BN, lowerBound: BN, upperBound: BN, inputName = ""
  not appear during the computation. constantPoints are multiples by powers of 2 of the constant
  points defined in the documentation.
 */
-export function pedersen(input: string[]) {
+export function pedersen(input: string[]): string {
   let point = shiftPoint;
   for (let i = 0; i < input.length; i++) {
     let x = new BN(input[i], 16);
@@ -105,7 +105,7 @@ export function hashMsg(
   token0: string,
   token1OrPubKey: string,
   condition: string | null = null
-) {
+): string {
   let packedMessage = instructionTypeBn;
   packedMessage = packedMessage.ushln(31).add(vault0Bn);
   packedMessage = packedMessage.ushln(31).add(vault1Bn);
@@ -113,7 +113,7 @@ export function hashMsg(
   packedMessage = packedMessage.ushln(63).add(amount1Bn);
   packedMessage = packedMessage.ushln(31).add(nonceBn);
   packedMessage = packedMessage.ushln(22).add(expirationTimestampBn);
-  let msgHash = null;
+  let msgHash: string;
   if (condition === null) {
     msgHash = pedersen([pedersen([token0, token1OrPubKey]), packedMessage.toString(16)]);
   } else {
@@ -206,7 +206,7 @@ export function getTransferMsgHash(
   receiverPublicKey: string,
   expirationTimestamp: number,
   condition: string | null = null
-) {
+): string {
   assert(
     hasHexPrefix(token) && hasHexPrefix(receiverPublicKey) && (condition === null || hasHexPrefix(condition)),
     "Hex strings expected to be prefixed with 0x."
@@ -253,7 +253,7 @@ export function getTransferMsgHash(
  This function does the opposite operation so that
    _truncateToN(fixMsgHashLen(msgHash)) == msgHash.
 */
-export function fixMsgHashLen(msgHash: string) {
+export function fixMsgHashLen(msgHash: string): string {
   // Convert to BN to remove leading zeros.
   msgHash = new BN(msgHash, 16).toString(16);
 
@@ -272,7 +272,7 @@ export function fixMsgHashLen(msgHash: string) {
  privateKey should be an elliptic.keyPair with a valid private key.
  Returns an elliptic.Signature.
 */
-export function sign(privateKey: EllipticCurve.KeyPair, msgHash: string) {
+export function sign(privateKey: EllipticCurve.KeyPair, msgHash: string): EllipticCurve.Signature {
   const msgHashBN = new BN(msgHash, 16);
   // Verify message hash has valid length.
   assertInRange(msgHashBN, zeroBn, maxEcdsaVal, "msgHash");
@@ -292,7 +292,7 @@ export function sign(privateKey: EllipticCurve.KeyPair, msgHash: string) {
  msgSignature should be an elliptic.Signature.
  Returns a boolean true if the verification succeeds.
 */
-export function verify(publicKey: EllipticCurve.KeyPair, msgHash: string, msgSignature: EllipticCurve.Signature) {
+export function verify(publicKey: EllipticCurve.KeyPair, msgHash: string, msgSignature: EllipticCurve.Signature): boolean {
   const msgHashBN = new BN(msgHash, 16);
   // Verify message hash has valid length.
   assertInRange(msgHashBN, zeroBn, maxEcdsaVal, "msgHash");

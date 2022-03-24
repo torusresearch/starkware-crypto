@@ -3,7 +3,7 @@ import {
   getKeyPairFromPath,
   grindKey, // Function.
   StarkExEc, // Data.
-} from './key_derivation'
+} from "./key_derivation";
 import {
   ec,
   getLimitOrderMsgHash,
@@ -11,7 +11,7 @@ import {
   pedersen,
   sign,
   verify, // Function.
-} from './signature'
+} from "./signature";
 
 export {
   ec,
@@ -24,4 +24,4 @@ export {
   sign,
   StarkExEc, // Data.
   verify, // Function.
-}
+};

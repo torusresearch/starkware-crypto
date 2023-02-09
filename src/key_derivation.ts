@@ -18,7 +18,7 @@ import { mnemonicToSeedSync } from "bip39";
 import BN from "bn.js";
 import { ec as EllipticCurve } from "elliptic";
 import { binaryToNumber, hexToBinary, hexToBuffer, numberToHex, removeHexPrefix, sanitizeBytes } from "enc-utils";
-import { hdkey } from "ethereumjs-wallet";
+import { HDKey } from "ethereum-cryptography/hdkey";
 import hash from "hash.js";
 
 import { ec } from "./signature";
@@ -77,7 +77,7 @@ function grindKey(keySeed: string, keyValLimit: BN): string {
 */
 function getKeyPairFromPath(mnemonic: string, path: string): EllipticCurve.KeyPair {
   const seed = mnemonicToSeedSync(mnemonic);
-  const keySeed = hdkey.fromMasterSeed(seed).derivePath(path).getWallet().getPrivateKeyString();
+  const keySeed = Buffer.from(HDKey.fromMasterSeed(seed).derive(path).privateKey as Uint8Array).toString("hex");
   const starkEcOrder = ec.n as BN;
   return ec.keyFromPrivate(grindKey(keySeed, starkEcOrder), "hex");
 }

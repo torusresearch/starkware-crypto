@@ -1,6 +1,6 @@
 {
   "name": "@toruslabs/starkware-crypto",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Signatures, keys and Pedersen hash on STARK friendly elliptic curve",
   "main": "dist/starkwareCrypto.cjs.js",
   "types": "dist/types/index.d.ts",

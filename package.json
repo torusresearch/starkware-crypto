@@ -13,7 +13,7 @@
     "release": "torus-scripts release",
     "prepack": "npm run build",
     "lint": "eslint --fix 'src/**/*.ts'",
-    "prepare": "husky install",
+    "prepare": "husky",
     "test": "mocha test/*.test.js"
   },
   "repository": {
@@ -28,31 +28,30 @@
   },
   "homepage": "https://github.com/torusresearch/starkware-crypto#readme",
   "dependencies": {
-    "assert": "^2.0.0",
+    "assert": "^2.1.0",
     "bip39": "^3.1.0",
     "bn.js": "^5.2.1",
-    "elliptic": "~6.5.4",
+    "elliptic": "~6.5.5",
     "enc-utils": "^3.0.0",
-    "ethereum-cryptography": "^2.1.2",
+    "ethereum-cryptography": "^2.1.3",
     "hash.js": "^1.1.7"
   },
   "devDependencies": {
-    "@babel/register": "^7.22.5",
-    "@toruslabs/eslint-config-typescript": "^3.0.0",
-    "@toruslabs/torus-scripts": "^5.0.2",
-    "@types/elliptic": "^6.4.14",
+    "@babel/register": "^7.23.7",
+    "@toruslabs/eslint-config-typescript": "^3.2.0",
+    "@toruslabs/torus-scripts": "^5.3.0",
+    "@types/elliptic": "^6.4.18",
     "chai": "^4.3.7",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.4.5",
     "eslint": "^8.46.0",
-    "husky": "^8.0.3",
-    "mocha": "^10.2.0",
-    "prettier": "^3.0.1",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.1.6"
+    "husky": "^9.0.11",
+    "mocha": "^10.4.0",
+    "prettier": "^3.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.4"
   },
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "author": "Torus Labs",
   "license": "MIT",

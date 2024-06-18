@@ -1,13 +1,18 @@
 import Register from "@babel/register";
-import dotenv from "dotenv";
-import path from "path";
-import { register } from "ts-node";
 
-dotenv.config();
+import currentPkg from "../package.json" assert { type: "json" };
 
-register({ project: path.resolve("tsconfig.json"), transpileOnly: true, compilerOptions: { module: "esnext" } });
+const runtimeVersion = currentPkg.peerDependencies["@babel/runtime"];
 
 Register({
   extensions: [".ts", ".js"],
-  rootMode: "upward",
+  presets: [["@babel/env", { bugfixes: true }], "@babel/typescript"],
+  plugins: [
+    "@babel/plugin-syntax-bigint",
+    "@babel/plugin-transform-object-rest-spread",
+    "@babel/plugin-transform-class-properties",
+    ["@babel/transform-runtime", { version: runtimeVersion }],
+    "@babel/plugin-transform-numeric-separator",
+  ],
+  sourceType: "unambiguous",
 });

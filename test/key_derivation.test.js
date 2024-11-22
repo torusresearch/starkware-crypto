@@ -1,8 +1,6 @@
-import chai from "chai";
+import { expect } from "chai";
 
 import { getAccountPath, getKeyPairFromPath, grindKey, StarkExEc } from "../src/key_derivation";
-
-const { expect } = chai;
 
 const layer = "starkex";
 const application = "starkdeployement";

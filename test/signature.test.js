@@ -1,17 +1,15 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable mocha/max-top-level-suites */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-/* eslint-disable no-unused-expressions */
+
 import BN from "bn.js";
-import chai from "chai";
+import { expect } from "chai";
 
 import { ec, maxEcdsaVal, pedersen, sign, verify } from "../src/signature";
 
 const precomputedKeys = require("./keys_precomputed.json");
 const testData = require("./signature_test_data.json");
 const rfc6979TestData = require("./rfc6979_signature_test_vector.json");
-
-const { expect } = chai;
 
 function randomString(characters, length) {
   let result = "";

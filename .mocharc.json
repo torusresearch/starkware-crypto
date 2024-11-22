@@ -1,0 +1,6 @@
+{
+  "node-option": ["experimental-specifier-resolution=node", "import=tsx"],
+  "timeout": 0,
+  "exit": true,
+  "extension": "ts"
+}

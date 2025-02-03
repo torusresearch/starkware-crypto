@@ -34,22 +34,22 @@
     "bn.js": "^5.2.1",
     "elliptic": "^6.6.1",
     "enc-utils": "^3.0.0",
-    "ethereum-cryptography": "^2.2.1",
+    "ethereum-cryptography": "^3.1.0",
     "hash.js": "^1.1.7"
   },
   "devDependencies": {
     "@babel/register": "^7.25.9",
-    "@toruslabs/eslint-config-typescript": "^3.3.4",
-    "@toruslabs/torus-scripts": "^6.1.6",
+    "@toruslabs/eslint-config-typescript": "^4.0.4",
+    "@toruslabs/torus-scripts": "^7.0.5",
     "@types/elliptic": "^6.4.18",
     "chai": "^5.1.2",
-    "dotenv": "^16.4.5",
-    "eslint": "^8.57.0",
+    "dotenv": "^16.4.7",
+    "eslint": "^9.19.0",
     "husky": "^9.1.7",
-    "mocha": "^10.8.2",
-    "prettier": "^3.3.3",
+    "mocha": "^11.1.0",
+    "prettier": "^3.4.2",
     "tsx": "^4.19.2",
-    "typescript": "^5.6.3"
+    "typescript": "^5.7.3"
   },
   "files": [
     "dist"

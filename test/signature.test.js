@@ -1,24 +1,19 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable mocha/max-top-level-suites */
-/* eslint-disable @typescript-eslint/no-unused-expressions */
-
 import BN from "bn.js";
-import { expect } from "chai";
+import { describe, expect, it } from "vitest";
 
 import { ec, maxEcdsaVal, pedersen, sign, verify } from "../src/signature";
-
-const precomputedKeys = require("./keys_precomputed.json");
-const testData = require("./signature_test_data.json");
-const rfc6979TestData = require("./rfc6979_signature_test_vector.json");
+import precomputedKeys from "./keys_precomputed.json";
+import rfc6979TestData from "./rfc6979_signature_test_vector.json";
+import testData from "./signature_test_data.json";
 
 function randomString(characters, length) {
   let result = "";
-
   for (let i = 0; i < length; ++i) {
     result += characters.charAt(Math.floor(Math.random() * characters.length));
   }
   return result;
 }
+
 function randomHexString(length, leading0x = false) {
   const result = randomString("0123456789ABCDEF", length);
   return leading0x ? `0x${result}` : result;
@@ -29,37 +24,36 @@ function generateRandomStarkPrivateKey() {
   return randomHexString(63);
 }
 
-describe("Key computation", function () {
-  it("should derive public key correctly", function () {
+describe("Key computation", () => {
+  it("should derive public key correctly", () => {
     for (const privKey in precomputedKeys) {
       if ({}.hasOwnProperty.call(precomputedKeys, privKey)) {
-        // Drop the '0x' prefix.
         const fixedPrivKey = privKey.substring(2);
         const keyPair = ec.keyFromPrivate(fixedPrivKey, "hex");
         const pubKey = `0x${keyPair.getPublic().getX().toString("hex")}`;
         const expectedPubKey = precomputedKeys[privKey];
-        expect(expectedPubKey).to.equal(pubKey);
+        expect(pubKey).toBe(expectedPubKey);
       }
     }
   });
 });
 
-describe("Verify", function () {
+describe("Verify", () => {
   // Generate BN of 1.
   const oneBn = new BN("1", 16);
 
-  it("should verify valid signatures", function () {
+  it("should verify valid signatures", () => {
     const privKey = generateRandomStarkPrivateKey();
     const keyPair = ec.keyFromPrivate(privKey, "hex");
     const keyPairPub = ec.keyFromPublic(keyPair.getPublic(), "BN");
     const msgHash = new BN(randomHexString(61), "hex");
     const msgSignature = sign(keyPair, msgHash);
 
-    expect(verify(keyPair, msgHash.toString(16), msgSignature)).to.be.true;
-    expect(verify(keyPairPub, msgHash.toString(16), msgSignature)).to.be.true;
+    expect(verify(keyPair, msgHash.toString(16), msgSignature)).toBe(true);
+    expect(verify(keyPairPub, msgHash.toString(16), msgSignature)).toBe(true);
   });
 
-  it("should not verify invalid signature inputs lengths", function () {
+  it("should not verify invalid signature inputs lengths", () => {
     const ecOrder = ec.n;
     const maxMsgHash = maxEcdsaVal.sub(oneBn);
     const maxR = maxEcdsaVal.sub(oneBn);
@@ -67,20 +61,20 @@ describe("Verify", function () {
     const maxStarkKey = maxEcdsaVal.sub(oneBn);
 
     // Test invalid message length.
-    expect(() => verify(maxStarkKey, maxMsgHash.add(oneBn).toString(16), { r: maxR, s: maxS })).to.throw(
+    expect(() => verify(maxStarkKey, maxMsgHash.add(oneBn).toString(16), { r: maxR, s: maxS })).toThrow(
       "Message not signable, invalid msgHash length."
     );
     // Test invalid r length.
-    expect(() => verify(maxStarkKey, maxMsgHash.toString(16), { r: maxR.add(oneBn), s: maxS })).to.throw("Message not signable, invalid r length.");
+    expect(() => verify(maxStarkKey, maxMsgHash.toString(16), { r: maxR.add(oneBn), s: maxS })).toThrow("Message not signable, invalid r length.");
     // Test invalid w length.
-    expect(() => verify(maxStarkKey, maxMsgHash.toString(16), { r: maxR, s: maxS.add(oneBn) })).to.throw("Message not signable, invalid w length.");
+    expect(() => verify(maxStarkKey, maxMsgHash.toString(16), { r: maxR, s: maxS.add(oneBn) })).toThrow("Message not signable, invalid w length.");
     // Test invalid s length.
-    expect(() => verify(maxStarkKey, maxMsgHash.toString(16), { r: maxR, s: maxS.add(oneBn).add(oneBn) })).to.throw(
+    expect(() => verify(maxStarkKey, maxMsgHash.toString(16), { r: maxR, s: maxS.add(oneBn).add(oneBn) })).toThrow(
       "Message not signable, invalid s length."
     );
   });
 
-  it("should not verify invalid signatures", function () {
+  it("should not verify invalid signatures", () => {
     const privKey = generateRandomStarkPrivateKey();
     const keyPair = ec.keyFromPrivate(privKey, "hex");
     const keyPairPub = ec.keyFromPublic(keyPair.getPublic(), "BN");
@@ -89,34 +83,34 @@ describe("Verify", function () {
 
     // Test invalid public key.
     const invalidKeyPairPub = ec.keyFromPublic({ x: keyPairPub.pub.getX().add(oneBn), y: keyPairPub.pub.getY() }, "BN");
-    expect(verify(invalidKeyPairPub, msgHash.toString(16), msgSignature)).to.be.false;
+    expect(verify(invalidKeyPairPub, msgHash.toString(16), msgSignature)).toBe(false);
     // Test invalid message.
-    expect(verify(keyPair, msgHash.add(oneBn).toString(16), msgSignature)).to.be.false;
-    expect(verify(keyPairPub, msgHash.add(oneBn).toString(16), msgSignature)).to.be.false;
+    expect(verify(keyPair, msgHash.add(oneBn).toString(16), msgSignature)).toBe(false);
+    expect(verify(keyPairPub, msgHash.add(oneBn).toString(16), msgSignature)).toBe(false);
     // Test invalid r.
     msgSignature.r.iadd(oneBn);
-    expect(verify(keyPair, msgHash.toString(16), msgSignature)).to.be.false;
-    expect(verify(keyPairPub, msgHash.toString(16), msgSignature)).to.be.false;
+    expect(verify(keyPair, msgHash.toString(16), msgSignature)).toBe(false);
+    expect(verify(keyPairPub, msgHash.toString(16), msgSignature)).toBe(false);
     // Test invalid s.
     msgSignature.r.isub(oneBn);
     msgSignature.s.iadd(oneBn);
-    expect(verify(keyPair, msgHash.toString(16), msgSignature)).to.be.false;
-    expect(verify(keyPairPub, msgHash.toString(16), msgSignature)).to.be.false;
+    expect(verify(keyPair, msgHash.toString(16), msgSignature)).toBe(false);
+    expect(verify(keyPairPub, msgHash.toString(16), msgSignature)).toBe(false);
   });
 });
 
-describe("Signature", function () {
-  it("should sign all message hash lengths", function () {
+describe("Signature", () => {
+  it("should sign all message hash lengths", () => {
     const privateKey = "2dccce1da22003777062ee0870e9881b460a8b7eca276870f57c601f182136c";
     const keyPair = ec.keyFromPrivate(privateKey, "hex");
     const publicKey = ec.keyFromPublic(keyPair.getPublic(true, "hex"), "hex");
 
     function testSignature(msgHash, expectedR, expectedS) {
       const msgSignature = sign(keyPair, msgHash);
-      expect(verify(publicKey, msgHash, msgSignature)).to.be.true;
+      expect(verify(publicKey, msgHash, msgSignature)).toBe(true);
       const { r, s } = msgSignature;
-      expect(r.toString(16)).to.equal(expectedR);
-      expect(s.toString(16)).to.equal(expectedS);
+      expect(r.toString(16)).toBe(expectedR);
+      expect(s.toString(16)).toBe(expectedS);
     }
     // Message hash of length 61.
     testSignature(
@@ -148,25 +142,25 @@ describe("Signature", function () {
   });
 });
 
-describe("Pedersen Hash", function () {
-  it("should hash correctly", function () {
+describe("Pedersen Hash", () => {
+  it("should hash correctly", () => {
     for (const hashTestData of [testData.hash_test.pedersen_hash_data_1, testData.hash_test.pedersen_hash_data_2]) {
-      expect(pedersen([hashTestData.input_1.substring(2), hashTestData.input_2.substring(2)])).to.equal(hashTestData.output.substring(2));
+      expect(pedersen([hashTestData.input_1.substring(2), hashTestData.input_2.substring(2)])).toBe(hashTestData.output.substring(2));
     }
   });
 });
 
-describe("Signature Tests", function () {
-  it("should create ecdsa deterministic signatures", function () {
+describe("Signature Tests", () => {
+  it("should create ecdsa deterministic signatures", () => {
     const privateKey = rfc6979TestData.private_key.substring(2);
     const keyPair = ec.keyFromPrivate(privateKey, "hex");
-    let i = 0;
-    for (; i < rfc6979TestData.messages.length; i += 1) {
+
+    for (let i = 0; i < rfc6979TestData.messages.length; i += 1) {
       const msgHash = rfc6979TestData.messages[i].hash.substring(2);
       const msgSignature = sign(keyPair, msgHash);
       const { r, s } = msgSignature;
-      expect(r.toString(10)).to.equal(rfc6979TestData.messages[i].r);
-      expect(s.toString(10)).to.equal(rfc6979TestData.messages[i].s);
+      expect(r.toString(10)).toBe(rfc6979TestData.messages[i].r);
+      expect(s.toString(10)).toBe(rfc6979TestData.messages[i].s);
     }
   });
 });

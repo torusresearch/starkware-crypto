@@ -15,7 +15,7 @@
     "prepack": "npm run build",
     "lint": "eslint --fix 'src/**/*.ts'",
     "prepare": "husky",
-    "test": "mocha test/*.test.js"
+    "test": "vitest --run --coverage --config=test/configs/node.config.mjs"
   },
   "repository": {
     "type": "git",
@@ -42,14 +42,14 @@
     "@toruslabs/eslint-config-typescript": "^4.0.4",
     "@toruslabs/torus-scripts": "^7.0.5",
     "@types/elliptic": "^6.4.18",
-    "chai": "^5.1.2",
+    "@vitest/coverage-istanbul": "^3.0.4",
     "dotenv": "^16.4.7",
     "eslint": "^9.19.0",
     "husky": "^9.1.7",
-    "mocha": "^11.1.0",
     "prettier": "^3.4.2",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.4"
   },
   "files": [
     "dist"
